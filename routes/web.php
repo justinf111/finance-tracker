@@ -23,9 +23,17 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () { return Inertia::render('Dashboard');})->name('dashboard');
+
     Route::get('/budget', [BudgetController::class, 'index'])->name('budget.index');
+
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+
     Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+    Route::get('/accounts/create', [AccountController::class, 'create'])->name('accounts.create');
+    Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+
     Route::get('transactions/import', [ImportTransactionController::class, 'index'])->name('transactions.import.form');
     Route::post('transactions/import', [ImportTransactionController::class, 'import'])->name('transactions.import');
 });

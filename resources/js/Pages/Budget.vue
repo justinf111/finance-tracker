@@ -1,6 +1,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
+
+defineProps({
+    transactions: Object,
+    categories: Object,
+})
 </script>
 
 <template>
@@ -24,9 +28,9 @@ import Welcome from '@/Components/Welcome.vue';
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Fuel</td>
-                                <td>$500</td>
+                            <tr v-for="category in categories">
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.default_expected_spending}}</td>
                                 <td>$400</td>
                             </tr>
                             </tbody>
@@ -45,13 +49,13 @@ import Welcome from '@/Components/Welcome.vue';
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
+                            <tr v-for="transaction in transactions">
                                 <td>Fuel</td>
-                                <td>Fuel</td>
-                                <td>Fuel</td>
-                                <td>Fuel</td>
-                                <td>$500</td>
-                                <td>$400</td>
+                                <td>{{ transaction.description}}</td>
+                                <td>{{ transaction.vendor}}</td>
+                                <td>{{ transaction.amount}}</td>
+                                <td>{{ transaction.created_at}}</td>
+                                <td>CBA Credit Card</td>
                             </tr>
                             </tbody>
                         </table>

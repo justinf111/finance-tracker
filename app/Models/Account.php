@@ -10,6 +10,8 @@ class Account extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'starting_balance'];
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

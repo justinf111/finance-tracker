@@ -13,6 +13,7 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'default_expected_spending'];
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

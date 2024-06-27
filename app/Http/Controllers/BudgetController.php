@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -9,6 +11,9 @@ class BudgetController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Budget');
+        return Inertia::render('Budget', [
+            'transactions' => Transaction::query()->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get(),
+            'categories' => Category::query()->get(),
+        ]);
     }
 }

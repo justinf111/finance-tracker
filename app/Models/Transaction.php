@@ -14,6 +14,9 @@ class Transaction extends Model
 
     protected $fillable = ['vendor', 'amount', 'created_at', 'date'];
 
+    protected $casts = [
+        'created_at' => 'date:d-m-Y H:m'
+    ];
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
