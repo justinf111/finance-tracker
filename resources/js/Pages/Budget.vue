@@ -55,7 +55,7 @@ defineProps({
                                 <td>{{ transaction.vendor}}</td>
                                 <td>{{ transaction.amount}}</td>
                                 <td>{{ transaction.created_at}}</td>
-                                <td>CBA Credit Card</td>
+                                <td>{{ transaction.account.name }}</td>
                             </tr>
                             </tbody>
                         </table>

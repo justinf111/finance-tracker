@@ -12,7 +12,7 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['vendor', 'amount', 'created_at', 'date'];
+    protected $fillable = ['vendor', 'amount', 'created_at', 'date', 'account_id', 'category_id'];
 
     protected $casts = [
         'created_at' => 'date:d-m-Y H:m'

@@ -9,6 +9,13 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class TransactionsImport implements ToModel, WithHeadingRow
 {
+    public $account_id;
+
+    public function  __construct($account_id)
+    {
+        $this->account_id = $account_id;
+    }
+
     /**
     * @param array $row
     *
@@ -25,6 +32,7 @@ class TransactionsImport implements ToModel, WithHeadingRow
                 'vendor' => $row['description'],
                 'amount' => $row['credit'] ?? $row['debit'],
                 'created_at' => Carbon::createFromFormat('d/m/Y', $row['date']),
+                'account_id' => $this->account_id
             ]
         );
     }

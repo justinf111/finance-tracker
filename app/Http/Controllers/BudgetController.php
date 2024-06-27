@@ -11,8 +11,9 @@ class BudgetController extends Controller
 {
     public function index()
     {
+        dd(Transaction::query()->with('account')->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get());
         return Inertia::render('Budget', [
-            'transactions' => Transaction::query()->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get(),
+            'transactions' => Transaction::query()->with('account')->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get(),
             'categories' => Category::query()->get(),
         ]);
     }

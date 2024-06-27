@@ -4,11 +4,16 @@ import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
     transactions: null,
+    account: null,
 })
 
 function submit() {
     form.post('/transactions/import')
 }
+
+defineProps({
+    accounts: Object,
+})
 </script>
 
 <template>
@@ -28,6 +33,10 @@ function submit() {
                             <div class="mb-4">
                                 <label for="file" class="block text-gray-700">Upload File</label>
                                 <input type="file" @input="form.transactions = $event.target.files[0]" />
+                                <select v-model="form.account">
+                                    <option disabled value="">Please select an account</option>
+                                    <option v-for="(account, index) in accounts" :value="index" :key="index">{{account}}</option>
+                                </select>
                             </div>
                             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Import</button>
                         </form>
