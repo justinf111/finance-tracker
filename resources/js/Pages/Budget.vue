@@ -16,7 +16,7 @@ defineProps({
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="grid grid-cols-6 gap-4">
                     <div class="col-span-2 p-2 lg:p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <table class="w-full table-auto">
