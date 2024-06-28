@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Banks;
 use App\Models\Account;
+use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,7 +13,14 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Accounts/Index');
+        return Inertia::render('Accounts/Index', [
+            'transactions' => Transaction::with(['account', 'category'])
+                ->orderBy('created_at')
+                ->get(),
+            'categories' => Category::query()->get(),
+            'accounts' => Account::pluck('name', 'id'),
+            'banks' => Banks::list()
+        ]);
     }
 
     public function create()

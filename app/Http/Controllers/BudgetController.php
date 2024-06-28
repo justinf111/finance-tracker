@@ -17,16 +17,15 @@ class BudgetController extends Controller
         $categories = Category::with(['transactions' => function($query) use ($month, $year) {
             $query->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month);
-        }, 'transaction.account', 'transaction.category'])
+        }])
             ->get()
             ->map(function ($category) {
                 $category->total = $category->transactions->sum('amount');
+                $category->available = $category->default_expected_spending + $category->total;
                 return $category;
             });
 
-        $transactions = $categories->pluck('transactions')->sortBy('created_at');
         return Inertia::render('Budget', [
-            'transactions' => $transactions,
             'categories' => $categories,
         ]);
     }
