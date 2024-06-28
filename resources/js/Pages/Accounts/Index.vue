@@ -4,7 +4,8 @@ import {router, useForm} from '@inertiajs/vue3'
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
+import TextInput from "@/Components/TextInput.vue";
 
 defineProps({
     transactions: Object,
@@ -20,17 +21,27 @@ const updateTransaction = async (transaction) => {
     })
 };
 
-const form = useForm({
+const importTransactionForm = useForm({
     transactions: null,
     account: "",
     bank: "",
 })
 
-function submit() {
+function importTransactions() {
     form.post('/transactions/import')
 }
 
+const createAccountForm = useForm({
+    name: null,
+    starting_balance: null,
+})
+
+function createAccount() {
+    router.post('/accounts', form)
+}
+
 const transactionsBeingImported = ref(null);
+const accountBeingCreated = ref(null);
 
 </script>
 
@@ -45,6 +56,35 @@ const transactionsBeingImported = ref(null);
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <ConfirmationModal :show="accountBeingCreated != null" @close="accountBeingCreated = null">
+                        <template #title>
+                            Create Account
+                        </template>
+
+                        <template #content>
+                            <div class="mb-4">
+                                <TextInput id="name" v-model="createAccountForm.name" />
+
+                            </div>
+                            <div class="mb-4">
+                                <TextInput id="starting_balance" v-model="createAccountForm.starting_balance" />
+                            </div>
+                        </template>
+
+                        <template #footer>
+                            <SecondaryButton @click="accountBeingCreated = null">
+                                Cancel
+                            </SecondaryButton>
+
+                            <PrimaryButton
+                                class="ms-3"
+                                @click="createAccount"
+                            >
+                                Import
+                            </PrimaryButton>
+                        </template>
+                    </ConfirmationModal>
+
                     <ConfirmationModal :show="transactionsBeingImported != null" @close="transactionsBeingImported = null">
                         <template #title>
                             Import Transactions
@@ -52,16 +92,16 @@ const transactionsBeingImported = ref(null);
 
                         <template #content>
                                 <div class="mb-4">
-                                    <input type="file" @input="form.transactions = $event.target.files[0]" />
+                                    <input type="file" @input="importTransactionForm.transactions = $event.target.files[0]" />
                                 </div>
                                 <div class="mb-4">
-                                    <select v-model="form.account">
+                                    <select v-model="importTransactionForm.account">
                                         <option disabled value="">Please select an account</option>
                                         <option v-for="(account, index) in accounts" :value="index" :key="index">{{account}}</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
-                                    <select v-model="form.bank">
+                                    <select v-model="importTransactionForm.bank">
                                         <option disabled value="">Please select a bank</option>
                                         <option v-for="bank in banks" :value="bank.value" :key="bank.value">{{bank.name}}</option>
                                     </select>
@@ -75,7 +115,7 @@ const transactionsBeingImported = ref(null);
 
                             <PrimaryButton
                                 class="ms-3"
-                                @click="submit"
+                                @click="importTransactions"
                             >
                                 Import
                             </PrimaryButton>
@@ -83,6 +123,9 @@ const transactionsBeingImported = ref(null);
                     </ConfirmationModal>
                     <button class="cursor-pointer ms-6 text-sm text-red-500" @click="transactionsBeingImported = true">
                         Import
+                    </button>
+                    <button class="cursor-pointer ms-6 text-sm text-red-500" @click="accountBeingCreated = true">
+                        Create Account
                     </button>
                     <div class="col-span-4 p-2 lg:p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <table class="w-full">
