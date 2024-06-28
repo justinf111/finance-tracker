@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {Link, router, useForm} from "@inertiajs/vue3";
-import {reactive, ref} from "vue";
+import {router, useForm} from "@inertiajs/vue3";
+import {ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -26,6 +26,9 @@ async function submit() {
     form.reset();
 }
 
+const transactions = ref(null);
+const currentCategory = ref(null);
+const viewingCategoryTransactions = ref(null);
 const categoryBeingCreated = ref(null);
 </script>
 
@@ -74,6 +77,43 @@ const categoryBeingCreated = ref(null);
                         </PrimaryButton>
                     </template>
                 </ConfirmationModal>
+
+                <ConfirmationModal max-width="3xl" :show="viewingCategoryTransactions != null" @close="viewingCategoryTransactions = null">
+                    <template #title>
+                        Transactions
+                    </template>
+
+                    <template #content>
+                        <table class="w-full text-sm">
+                            <thead>
+                            <tr class="text-left">
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Vendor</th>
+                                <th>Amount</th>
+                                <th class="w-35">Date</th>
+                                <th>Account</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="transaction in transactions">
+                                <td>{{ currentCategory.name }}</td>
+                                <td>{{ transactions.description }}</td>
+                                <td>{{ transaction.vendor}}</td>
+                                <td>{{ transaction.amount}}</td>
+                                <td>{{ transaction.created_at}}</td>
+                                <td>{{ transaction.account.name}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </template>
+
+                    <template #footer>
+                        <SecondaryButton @click="viewingCategoryTransactions = null">
+                            Close
+                        </SecondaryButton>
+                    </template>
+                </ConfirmationModal>
                 <div class="grid grid-cols-6 gap-4">
                     <div class="col-span-4 p-2 lg:p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <button class="cursor-pointer text-sm" @click="categoryBeingCreated = true">
@@ -81,7 +121,7 @@ const categoryBeingCreated = ref(null);
                         </button>
                         <table class="w-full table-auto">
                             <thead>
-                            <tr class="text-left">
+                            <tr class="text-left text-sm">
                                 <th>Category</th>
                                 <th>Budget</th>
                                 <th>Activity</th>
@@ -89,10 +129,17 @@ const categoryBeingCreated = ref(null);
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="category in categories">
+                            <tr v-for="category in categories" class="text-sm">
                                 <td>{{ category.name }}</td>
                                 <td>${{ category.default_expected_spending }}</td>
-                                <td>${{ category.total }}</td>
+                                <td>
+                                    <button v-if="category.transactions.length > 0" class="cursor-pointer text-sm" @click="viewingCategoryTransactions = true; transactions = category.transactions; currentCategory = category">
+                                        ${{ category.total }}
+                                    </button>
+                                    <span v-else>
+                                        ${{ category.total }}
+                                    </span>
+                                </td>
                                 <td>${{ category.available }}</td>
                             </tr>
                             </tbody>

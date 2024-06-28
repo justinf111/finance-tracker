@@ -63,11 +63,21 @@ const accountBeingCreated = ref(null);
 
                         <template #content>
                             <div class="mb-4">
-                                <TextInput id="name" v-model="createAccountForm.name" />
+                                <TextInput
+                                    type="text"
+                                    class="mb-2 block w-3/4"
+                                    placeholder="Name"
+                                    v-model="createAccountForm.name"
+                                />
 
                             </div>
                             <div class="mb-4">
-                                <TextInput id="starting_balance" v-model="createAccountForm.starting_balance" />
+                                <TextInput
+                                    type="text"
+                                    class="mb-2 block w-3/4"
+                                    placeholder="Starting Balance"
+                                    v-model="createAccountForm.starting_balance"
+                                />
                             </div>
                         </template>
 
@@ -95,13 +105,13 @@ const accountBeingCreated = ref(null);
                                     <input type="file" @input="importTransactionForm.transactions = $event.target.files[0]" />
                                 </div>
                                 <div class="mb-4">
-                                    <select v-model="importTransactionForm.account">
+                                    <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-2/4" v-model="importTransactionForm.account">
                                         <option disabled value="">Please select an account</option>
                                         <option v-for="(account, index) in accounts" :value="index" :key="index">{{account}}</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
-                                    <select v-model="importTransactionForm.bank">
+                                    <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-2/4" v-model="importTransactionForm.bank">
                                         <option disabled value="">Please select a bank</option>
                                         <option v-for="bank in banks" :value="bank.value" :key="bank.value">{{bank.name}}</option>
                                     </select>
@@ -130,7 +140,7 @@ const accountBeingCreated = ref(null);
                     <div class="col-span-4 p-2 lg:p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <table class="w-full">
                             <thead>
-                            <tr class="text-left">
+                            <tr class="text-left text-sm">
                                 <th>Category</th>
                                 <th>Description</th>
                                 <th>Vendor</th>
@@ -139,7 +149,7 @@ const accountBeingCreated = ref(null);
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="transaction in transactions">
+                            <tr v-for="transaction in transactions" class="text-sm">
                                 <td>
                                     <select v-model="transaction.category_id" @change="updateTransaction(transaction)">
                                         <option v-for="category in categories" :value="category.id" :key="category.id">{{ category.name }}</option>

@@ -15,7 +15,8 @@ class BudgetController extends Controller
         $year = now()->format('Y');
 
         $categories = Category::with(['transactions' => function($query) use ($month, $year) {
-            $query->whereYear('created_at', $year)
+            $query->with(['account'])
+                ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month);
         }])
             ->get()
