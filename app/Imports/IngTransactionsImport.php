@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class TransactionsImport implements ToModel, WithHeadingRow
+class IngTransactionsImport implements ToModel, WithHeadingRow
 {
     public $account_id;
 

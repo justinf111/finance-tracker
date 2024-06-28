@@ -12,10 +12,10 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['vendor', 'amount', 'created_at', 'date', 'account_id', 'category_id'];
+    protected $fillable = ['description', 'vendor', 'amount', 'created_at', 'date', 'account_id', 'category_id'];
 
     protected $casts = [
-        'created_at' => 'date:d-m-Y H:m'
+        'created_at' => 'date:d-m-Y'
     ];
     public function category(): BelongsTo
     {

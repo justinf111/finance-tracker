@@ -22,7 +22,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'default_expected_spending' => 'required|integer',
+            'default_expected_spending' => 'required|numeric',
         ]);
 
         Category::query()->firstOrCreate(
@@ -30,6 +30,6 @@ class CategoryController extends Controller
             $request->only(['name', 'default_expected_spending'])
         );
 
-        return redirect()->route('categories.index')->with('success', 'Account created successfully.');
+        return redirect()->route('categories.create')->with('success', 'Account created successfully.');
     }
 }

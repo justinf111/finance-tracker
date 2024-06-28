@@ -11,10 +11,36 @@ class BudgetController extends Controller
 {
     public function index()
     {
-        dd(Transaction::query()->with('account')->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get());
+        $month = now()->format('m');
+        $year = now()->format('Y');
+
+        $categories = Category::with(['transactions' => function($query) use ($month, $year) {
+            $query->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month);
+        }, 'transaction.account', 'transaction.category'])
+            ->get()
+            ->map(function ($category) {
+                $category->total = $category->transactions->sum('amount');
+                return $category;
+            });
+
+        $transactions = $categories->pluck('transactions')->sortBy('created_at');
         return Inertia::render('Budget', [
-            'transactions' => Transaction::query()->with('account')->whereBetween('created_at', [now()->firstOfMonth(), now()->lastOfMonth()])->get(),
-            'categories' => Category::query()->get(),
+            'transactions' => $transactions,
+            'categories' => $categories,
         ]);
+    }
+
+    // Update transaction
+    public function update(Request $request, Transaction $transaction)
+    {
+        $request->validate([
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $transaction->update($request->only('category_id', 'description'));
+
+        return redirect()->back()->with('success', 'Transaction updated successfully.');
     }
 }

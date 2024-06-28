@@ -1,10 +1,18 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { router } from '@inertiajs/vue3'
 
 defineProps({
     transactions: Object,
     categories: Object,
 })
+
+const updateTransaction = async (transaction) => {
+    router.patch(route('transactions.update', transaction.id), {
+        category_id: transaction.category_id,
+        description: transaction.description,
+    })
+};
 </script>
 
 <template>
@@ -50,8 +58,14 @@ defineProps({
                             </thead>
                             <tbody>
                             <tr v-for="transaction in transactions">
-                                <td>Fuel</td>
-                                <td>{{ transaction.description}}</td>
+                                <td>
+                                    <select v-model="transaction.category_id" @change="updateTransaction(transaction)">
+                                        <option v-for="category in categories" :value="category.id" :key="category.id">{{ category.name }}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" v-model="transaction.description" @change="updateTransaction(transaction)" class="w-full">
+                                </td>
                                 <td>{{ transaction.vendor}}</td>
                                 <td>{{ transaction.amount}}</td>
                                 <td>{{ transaction.created_at}}</td>

@@ -4,7 +4,8 @@ import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
     transactions: null,
-    account: null,
+    account: "",
+    bank: "",
 })
 
 function submit() {
@@ -13,6 +14,7 @@ function submit() {
 
 defineProps({
     accounts: Object,
+    banks: Array,
 })
 </script>
 
@@ -36,6 +38,10 @@ defineProps({
                                 <select v-model="form.account">
                                     <option disabled value="">Please select an account</option>
                                     <option v-for="(account, index) in accounts" :value="index" :key="index">{{account}}</option>
+                                </select>
+                                <select v-model="form.bank">
+                                    <option disabled value="">Please select a bank</option>
+                                    <option v-for="bank in banks" :value="bank.value" :key="bank.value">{{bank.name}}</option>
                                 </select>
                             </div>
                             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Import</button>
