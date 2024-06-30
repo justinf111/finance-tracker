@@ -15,9 +15,15 @@ class BudgetCategoryController extends Controller
             'expected_spending' => 'required|numeric',
         ]);
 
-        BudgetCategory::where('budget_id', $budget->id)
-            ->where('category_id', $category->id)
-            ->update($request->only('expected_spending'));
+        $budgetCategory = BudgetCategory::updateOrCreate(
+            [
+                'budget_id' => $budget->id,
+                'category_id' => $category->id
+            ],
+            [
+                'expected_spending' => $request->get('expected_spending')
+            ]
+        );
 
         return redirect()->back();
     }

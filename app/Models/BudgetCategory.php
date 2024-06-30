@@ -10,7 +10,7 @@ class BudgetCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['budget_id', 'category_id', 'amount'];
+    protected $fillable = ['budget_id', 'category_id', 'expected_spending'];
 
     public function category(): BelongsTo
     {
