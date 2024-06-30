@@ -28,7 +28,7 @@ const importTransactionForm = useForm({
 })
 
 function importTransactions() {
-    form.post('/transactions/import')
+    importTransactionForm.post('/transactions/import')
 }
 
 const createAccountForm = useForm({

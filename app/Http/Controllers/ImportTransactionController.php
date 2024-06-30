@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateBudgetFromTransactions;
 use App\Banks;
 use App\Imports\AmexTransactionsImport;
 use App\Imports\CommBankTransactionsImport;
@@ -36,8 +37,11 @@ class ImportTransactionController extends Controller
             Banks::ING->value => IngTransactionsImport::class,
         ];
 
-        Excel::import(new $importTypes[$request->get('bank')]($request->get('account')), $request->file('transactions'));
+        $import = new $importTypes[$request->get('bank')]($request->get('account'));
+        Excel::import($import, $request->file('transactions'));
 
-        return redirect()->route('budget.index')->with('success', 'Transactions imported successfully.');
+        resolve(CreateBudgetFromTransactions::class)->run($import->importedTransactions);
+
+        return redirect()->route('accounts.index');
     }
 }

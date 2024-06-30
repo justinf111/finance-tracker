@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Budget;
+use App\Models\BudgetCategory;
 use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -9,20 +11,19 @@ use Inertia\Inertia;
 
 class BudgetController extends Controller
 {
-    public function index()
+    public function index(Budget $budget)
     {
-        $month = now()->format('m');
-        $year = now()->format('Y');
-
-        $categories = Category::with(['transactions' => function($query) use ($month, $year) {
+        $categories = Category::with(['transactions' => function($query) use ($budget) {
             $query->with(['account'])
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month);
+                ->whereYear('created_at', $budget->year)
+                ->whereMonth('created_at', $budget->month);
+        }, 'budgetCategory' => function($query) use ($budget) {
+            $query->where('budget_id', $budget->id);
         }])
             ->get()
             ->map(function ($category) {
                 $category->total = $category->transactions->sum('amount');
-                $category->available = $category->default_expected_spending + $category->total;
+                $category->available = ($category->budgetCategory->first()->expected_spending ?? $category->default_expected_spending) + $category->total;
                 return $category;
             });
 

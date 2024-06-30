@@ -19,8 +19,8 @@ class Category extends Model
         return $this->hasMany(Transaction::class);
     }
 
-    public function expectedSpending(): HasMany
+    public function budgetCategory(): HasMany
     {
-        return $this->hasMany(ExpectedSpending::class);
+        return $this->hasMany(BudgetCategory::class);
     }
 }

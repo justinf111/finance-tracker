@@ -4,38 +4,21 @@ namespace App\Imports;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class AmexTransactionsImport implements ToModel, WithHeadingRow
+class AmexTransactionsImport extends BaseTransactionsImport implements ToModel, WithHeadingRow
 {
-    public $account_id;
-
-    public function  __construct($account_id)
-    {
-        $this->account_id = $account_id;
-    }
 
     /**
     * @param array $row
     *
-    * @return \Illuminate\Database\Eloquent\Model|null
+    * @return Model|null
     */
-    public function model(array $row)
+    public function model(array $row): ?Model
     {
         $amount = -1 * floatval($row['amount']);
-
-        return Transaction::firstOrCreate(
-            [
-                'vendor' => $row['description'],
-                'amount' => $amount,
-            ],
-            [
-                'vendor' => $row['description'],
-                'amount' => $amount,
-                'created_at' => Carbon::createFromFormat('d/m/Y', $row['date']),
-                'account_id' => $this->account_id
-            ]
-        );
+        return $this->createTransaction($amount, $row['description'], $row['date']);
     }
 }

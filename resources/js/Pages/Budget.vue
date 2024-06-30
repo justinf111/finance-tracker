@@ -146,7 +146,6 @@ const categoryBeingCreated = ref(null);
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </AppLayout>

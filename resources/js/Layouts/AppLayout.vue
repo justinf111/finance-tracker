@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import {computed, ref} from 'vue';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -11,6 +11,9 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 defineProps({
     title: String,
 });
+
+const page = usePage()
+const currentMonthBudget = computed(() => page.props.currentMonthBudget)
 
 const showingNavigationDropdown = ref(false);
 
@@ -41,13 +44,13 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('budget.index')">
+                                <Link :href="route('budget.index', { budget : currentMonthBudget.id })">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('budget.index')" :active="route().current('budget.index')">
+                                <NavLink :href="route('budget.index', { budget: currentMonthBudget.id })" :active="route().current('budget.index')">
                                     Budget
                                 </NavLink>
                             </div>
@@ -196,7 +199,7 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('budget.index')" :active="route().current('budget.index')">
+                        <ResponsiveNavLink :href="route('budget.index', { budget: currentMonthBudget.id })" :active="route().current('budget.index')">
                             Budget
                         </ResponsiveNavLink>
 

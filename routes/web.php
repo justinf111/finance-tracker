@@ -22,7 +22,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/budget', [BudgetController::class, 'index'])->name('budget.index');
+    Route::get('/budget/{budget}', [BudgetController::class, 'index'])->name('budget.index');
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');

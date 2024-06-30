@@ -30,6 +30,6 @@ class CategoryController extends Controller
             $request->only(['name', 'default_expected_spending'])
         );
 
-        return redirect()->route('budget.index')->with('success', 'Account created successfully.');
+        return response()->noContent();
     }
 }
