@@ -23,12 +23,14 @@ class BudgetController extends Controller
             ->get()
             ->map(function ($category) {
                 $category->total = $category->transactions->sum('amount');
-                $category->available = ($category->budgetCategory->first()->expected_spending ?? $category->default_expected_spending) + $category->total;
+                $category->expectedSpending = $category->budgetCategory->first()->expected_spending ?? $category->default_expected_spending;
+                $category->available = ($category->expectedSpending) + $category->total;
                 return $category;
             });
 
         return Inertia::render('Budget', [
             'categories' => $categories,
+            'budget' => $budget
         ]);
     }
 

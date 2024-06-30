@@ -13,7 +13,15 @@ const date = ref();
 
 defineProps({
     categories: Object,
+    budget: Object,
 })
+
+const updateCategory = async (category, budget) => {
+    router.put(route('categories.update', { category: category.id, budget: budget.id }), {
+        name: category.name,
+        expected_spending: category.expectedSpending,
+    })
+};
 
 const form = useForm({
     name: null,
@@ -28,6 +36,8 @@ async function submit() {
 
 const transactions = ref(null);
 const currentCategory = ref(null);
+const editMode = ref(null);
+const editingCategory = ref(null);
 const viewingCategoryTransactions = ref(null);
 const categoryBeingCreated = ref(null);
 </script>
@@ -131,7 +141,24 @@ const categoryBeingCreated = ref(null);
                             <tbody>
                             <tr v-for="category in categories" class="text-sm">
                                 <td>{{ category.name }}</td>
-                                <td>${{ category.default_expected_spending }}</td>
+                                <td>
+                                    <div @mouseover="editingCategory = category.id" @mouseleave="editingCategory = false">
+                                        <div v-if="editingCategory == category.id" @click="editMode = true">
+                                            <input
+                                                v-if="editMode"
+                                                v-model="category.expectedSpending"
+                                                @blur="updateCategory(category, budget)"
+                                                class="border p-1"
+                                            />
+                                            <div v-else>
+                                                <span>${{ category.expectedSpending }}</span>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <span>${{ category.expectedSpending }}</span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <button v-if="category.transactions.length > 0" class="cursor-pointer text-sm" @click="viewingCategoryTransactions = true; transactions = category.transactions; currentCategory = category">
                                         ${{ category.total }}
