@@ -10,7 +10,6 @@ use App\Imports\CommBankTransactionsImport;
 use App\Imports\IngTransactionsImport;
 use App\Models\Account;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -29,8 +28,9 @@ class ImportTransactionController extends Controller
         $request->validate([
             'transactions' => 'required|mimes:xlsx,csv',
             'account' => 'required|exists:accounts,id',
-            'bank' => ['required', Rule::enum(Banks::class)]
         ]);
+
+        $account = Account::find($request->get('account'));
 
         $importTypes = [
             Banks::CommBank->value => CommBankTransactionsImport::class,
@@ -38,13 +38,14 @@ class ImportTransactionController extends Controller
             Banks::ING->value => IngTransactionsImport::class,
         ];
 
-        $import = new $importTypes[$request->get('bank')]($request->get('account'));
-        $account = Account::find($request->get('account'));
+        $import = new $importTypes[Banks::from($account->bank)->value]($request->get('account'));
         Excel::import($import, $request->file('transactions'));
 
-        resolve(CreateBudgetFromTransactions::class)->run($import->importedTransactions);
-        resolve(UpdateAccountBalanceFromTransactions::class)->run($account, $import->importedTransactions);
+        if ($import->importedTransactions) {
+            resolve(CreateBudgetFromTransactions::class)->run($import->importedTransactions);
+            resolve(UpdateAccountBalanceFromTransactions::class)->run($account, $import->importedTransactions);
+        }
 
-        return redirect()->route('accounts.index');
+        return redirect()->back();
     }
 }

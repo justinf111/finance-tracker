@@ -10,7 +10,7 @@ class Account extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'starting_balance'];
+    protected $fillable = ['name', 'balance', 'bank'];
 
     public function transactions(): HasMany
     {

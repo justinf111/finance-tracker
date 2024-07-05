@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class AccountController extends Controller
@@ -23,23 +24,18 @@ class AccountController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Accounts/Create');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'starting_balance' => 'required|integer',
+            'balance' => 'required|numeric',
+            'bank' => ['required', Rule::enum(Banks::class)]
         ]);
 
-        Account::query()->firstOrCreate(
-            ['name' => $request->get('name')],
-            $request->only(['name', 'starting_balance'])
+        Account::query()->create(
+            $request->only(['name', 'balance', 'bank'])
         );
 
-        return redirect()->route('accounts.index')->with('success', 'Account created successfully.');
+        return redirect()->back()->with('success', 'Account created successfully.');
     }
 }

@@ -30,6 +30,6 @@ class CategoryController extends Controller
             $request->only(['name', 'default_expected_spending'])
         );
 
-        return response()->noContent();
+        return redirect()->back();
     }
 }

@@ -8,7 +8,7 @@ class UpdateAccountBalanceFromTransactions
 {
     public function run(Account $account, array $transactions)
     {
-        $account->starting_balance = $account->starting_balance + collect($transactions)->sum('amount');
+        $account->balance = $account->balance + collect($transactions)->sum('amount');
         $account->save();
     }
 }

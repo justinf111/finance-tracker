@@ -23,6 +23,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+    Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+
     Route::get('/budget/search', [BudgetController::class, 'search'])->name('budget.search');
     Route::get('/budget/{budget}', [BudgetController::class, 'index'])->name('budget.index');
 
@@ -30,10 +33,6 @@ Route::middleware([
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('/categories/{budget}/{category}', [BudgetCategoryController::class, 'update'])->name('categories.update');
-
-    Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
-    Route::get('/accounts/create', [AccountController::class, 'create'])->name('accounts.create');
-    Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
 
     Route::patch('transactions/{transaction}', [BudgetController::class, 'update'])->name('transactions.update');
     Route::get('transactions/import', [ImportTransactionController::class, 'index'])->name('transactions.import.form');

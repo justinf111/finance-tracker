@@ -27,17 +27,22 @@ const importTransactionForm = useForm({
     bank: "",
 })
 
-function importTransactions() {
-    importTransactionForm.post('/transactions/import')
+async function importTransactions() {
+    await importTransactionForm.post('/transactions/import')
+    transactionsBeingImported.value = null;
+    importTransactionForm.reset();
 }
 
 const createAccountForm = useForm({
     name: null,
-    starting_balance: null,
+    balance: null,
+    bank: "",
 })
 
-function createAccount() {
-    router.post('/accounts', form)
+async function createAccount() {
+    await createAccountForm.post('/accounts')
+    accountBeingCreated.value = null;
+    createAccountForm.reset();
 }
 
 const transactionsBeingImported = ref(null);
@@ -75,9 +80,15 @@ const accountBeingCreated = ref(null);
                                 <TextInput
                                     type="text"
                                     class="mb-2 block w-3/4"
-                                    placeholder="Starting Balance"
-                                    v-model="createAccountForm.starting_balance"
+                                    placeholder="Balance"
+                                    v-model="createAccountForm.balance"
                                 />
+                            </div>
+                            <div class="mb-4">
+                                <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-3/4" v-model="createAccountForm.bank">
+                                    <option disabled value="">Please select a bank</option>
+                                    <option v-for="bank in banks" :value="bank.value" :key="bank.value">{{bank.name}}</option>
+                                </select>
                             </div>
                         </template>
 
@@ -90,7 +101,7 @@ const accountBeingCreated = ref(null);
                                 class="ms-3"
                                 @click="createAccount"
                             >
-                                Import
+                                Create Account
                             </PrimaryButton>
                         </template>
                     </ConfirmationModal>
@@ -110,12 +121,6 @@ const accountBeingCreated = ref(null);
                                         <option v-for="(account, index) in accounts" :value="account.id" :key="account.id">{{account.name}}</option>
                                     </select>
                                 </div>
-                                <div class="mb-4">
-                                    <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-2/4" v-model="importTransactionForm.bank">
-                                        <option disabled value="">Please select a bank</option>
-                                        <option v-for="bank in banks" :value="bank.value" :key="bank.value">{{bank.name}}</option>
-                                    </select>
-                                </div>
                         </template>
 
                         <template #footer>
@@ -131,13 +136,14 @@ const accountBeingCreated = ref(null);
                             </PrimaryButton>
                         </template>
                     </ConfirmationModal>
-                    <button class="cursor-pointer ms-6 text-sm text-red-500" @click="transactionsBeingImported = true">
-                        Import
-                    </button>
-                    <button class="cursor-pointer ms-6 text-sm text-red-500" @click="accountBeingCreated = true">
-                        Create Account
-                    </button>
+
                     <div class="col-span-4 p-2 lg:p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                        <button class="cursor-pointer text-sm" @click="transactionsBeingImported = true">
+                            Import
+                        </button>
+                        <button class="cursor-pointer ms-6 text-sm" @click="accountBeingCreated = true">
+                            Create Account
+                        </button>
                         <table class="w-full">
                             <thead>
                             <tr class="text-left text-sm">
