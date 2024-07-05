@@ -107,7 +107,7 @@ const accountBeingCreated = ref(null);
                                 <div class="mb-4">
                                     <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-2/4" v-model="importTransactionForm.account">
                                         <option disabled value="">Please select an account</option>
-                                        <option v-for="(account, index) in accounts" :value="index" :key="index">{{account}}</option>
+                                        <option v-for="(account, index) in accounts" :value="account.id" :key="account.id">{{account.name}}</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">

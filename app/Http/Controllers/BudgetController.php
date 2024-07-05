@@ -46,4 +46,19 @@ class BudgetController extends Controller
 
         return redirect()->back()->with('success', 'Transaction updated successfully.');
     }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'month' => 'required',
+            'year' => 'required',
+        ]);
+
+        $budget = Budget::firstOrCreate(
+            ['month' => $request->get('month'), 'year' => $request->get('year')],
+            ['month' => $request->get('month'), 'year' => $request->get('year')]
+        );
+
+        return redirect()->route('budget.index', ['budget' => $budget->id]);
+    }
 }

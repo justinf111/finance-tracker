@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CreateBudgetFromTransactions;
+use App\Actions\UpdateAccountBalanceFromTransactions;
 use App\Banks;
 use App\Imports\AmexTransactionsImport;
 use App\Imports\CommBankTransactionsImport;
@@ -38,9 +39,11 @@ class ImportTransactionController extends Controller
         ];
 
         $import = new $importTypes[$request->get('bank')]($request->get('account'));
+        $account = Account::find($request->get('account'));
         Excel::import($import, $request->file('transactions'));
 
         resolve(CreateBudgetFromTransactions::class)->run($import->importedTransactions);
+        resolve(UpdateAccountBalanceFromTransactions::class)->run($account, $import->importedTransactions);
 
         return redirect()->route('accounts.index');
     }

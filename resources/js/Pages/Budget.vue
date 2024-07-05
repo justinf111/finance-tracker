@@ -9,12 +9,21 @@ import TextInput from "@/Components/TextInput.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-const date = ref();
-
-defineProps({
+let props = defineProps({
     categories: Object,
     budget: Object,
 })
+
+let date = ref();
+
+const budgetSearch = async ({ instance, month, year }) => {
+    await router.get(route('budget.search'), {
+        month: month + 1,
+        year: year,
+    })
+    date.value.month = month + 1
+    date.value.year = year
+};
 
 const updateCategory = async (category, budget) => {
     router.put(route('categories.update', { category: category.id, budget: budget.id }), {
@@ -52,7 +61,7 @@ const categoryBeingCreated = ref(null);
 
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
-                <VueDatePicker v-model="date" month-picker auto-apply></VueDatePicker>
+                <VueDatePicker v-model="date" month-picker auto-apply @update-month-year="budgetSearch"></VueDatePicker>
                 <ConfirmationModal :show="categoryBeingCreated != null" @close="categoryBeingCreated = null">
                     <template #title>
                         Create Category

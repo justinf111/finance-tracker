@@ -18,7 +18,7 @@ class AccountController extends Controller
                 ->orderBy('created_at')
                 ->get(),
             'categories' => Category::query()->get(),
-            'accounts' => Account::pluck('name', 'id'),
+            'accounts' => Account::query()->get(),
             'banks' => Banks::list()
         ]);
     }

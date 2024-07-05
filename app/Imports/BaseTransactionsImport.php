@@ -26,19 +26,22 @@ abstract class BaseTransactionsImport
     abstract public function model(array $row): ?Model;
 
     protected function createTransaction($amount, $vendor, $date) {
-        $transaction = Transaction::firstOrCreate(
-            [
-                'vendor' => $vendor,
-                'amount' => $amount,
-            ],
-            [
+        $transaction = Transaction::query()
+            ->where('vendor', $vendor)
+            ->where('amount', $amount)
+            ->whereDate('created_at', Carbon::createFromFormat('d/m/Y', $date))
+            ->first();
+
+        if(!$transaction) {
+            $transaction = Transaction::create([
                 'vendor' => $vendor,
                 'amount' => $amount,
                 'created_at' => Carbon::createFromFormat('d/m/Y', $date),
                 'account_id' => $this->accountId
-            ]
-        );
-        $this->importedTransactions[] = $transaction;
+            ]);
+            $this->importedTransactions[] = $transaction;
+        }
+
         return $transaction;
     }
 }
